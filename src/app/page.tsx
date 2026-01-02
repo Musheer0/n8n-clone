@@ -6,9 +6,7 @@ const page = async() => {
   await requireAuth()
   return (
     <div>
-      <LogoutButton >
-        Logout
-      </LogoutButton>
+      
     </div>
   )
 }
