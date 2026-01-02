@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
-
+import {createId} from '@paralleldrive/cuid2'
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -91,3 +91,21 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+
+export const workflows = pgTable("workflows",{
+  name:text("name").notNull().default("untitled-workflow"),
+  id :text("id").primaryKey().$defaultFn(()=>createId()),
+  user_id:text("user_id").notNull().references(()=>user.id,{onDelete:"cascade"}),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    },
+  (table)=>[
+    index("by_user_id").on(table.user_id),
+    index("by_name").on(table.name),
+    index("by_updated_at").on(table.updatedAt)
+  ]
+  )

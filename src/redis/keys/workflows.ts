@@ -1,0 +1,1 @@
+export const getOneWorkflowKey = (id:string)=>`workflows:one:${id}`

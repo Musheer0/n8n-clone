@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db";
+import  db  from "@/db";
 import { redis } from "@/redis/client";
 import * as schema from "../../drizzle/schema";
 import { redirect } from "next/navigation";
