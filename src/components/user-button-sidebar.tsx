@@ -15,7 +15,12 @@ const SidebarUser = async() => {
                 asChild>
             <SidebarMenuButton
             >             
-                         <UserIcon/>
+                      {
+                        auth.user.image ?
+                        <img src={auth.user.image} alt='user profile picture' className='w-6 rounded-full h-6'/>
+                        :
+                           <UserIcon/>
+                      }
     <p>{auth.user.name}</p>     
             </SidebarMenuButton>
                 </DropdownMenuTrigger>

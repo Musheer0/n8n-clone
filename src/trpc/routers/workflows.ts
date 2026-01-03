@@ -48,14 +48,14 @@ export const workflowsRouter = createTRPCRouter({
     getAll:protectedProcedure
     .input(
         z.object({
-            cursor:z.number().optional()
+            cursor:z.string().optional()
         })
     ).query(async({ctx,input})=>{
       let cursor = input.cursor
      const w = cursor ?
      await db.query.workflows.findMany({
         where:and(
-            eq(user.id ,ctx.auth.user.id),
+            eq(workflows.user_id ,ctx.auth.user.id),
             lt(workflows.updatedAt,new Date(cursor))
         ),
         limit:10+1,
@@ -64,13 +64,13 @@ export const workflowsRouter = createTRPCRouter({
      :
      await db.query.workflows.findMany({
         where:and(
-            eq(user.id ,ctx.auth.user.id),
+            eq(workflows.user_id ,ctx.auth.user.id),
             
         ),
-        limit:10+1,
+        limit:PAGE_SIZE+1,
         orderBy:desc(workflows.updatedAt)
      });
-     cursor = w.length >PAGE_SIZE ? w[PAGE_SIZE].updatedAt.getMilliseconds() : undefined;
+     cursor = w.length >PAGE_SIZE ? w[PAGE_SIZE].updatedAt.toISOString() : undefined;
      return {
         worflows:w,
         cursor
@@ -113,7 +113,7 @@ export const workflowsRouter = createTRPCRouter({
             });
          })
        if(!w || w.user_id!==ctx.auth.user.id) throw new TRPCError({code:"FORBIDDEN",message:"you don't have access to this workflow"});
-       const updated_workflow = await db.update(workflows).set({
+       const [updated_workflow] = await db.update(workflows).set({
         name:input.name
        })
        //trusted cuz already verified access to this workflow
