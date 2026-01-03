@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${font.className} antialiased`}
+        className={`${font.className} antialiased max-h-screen w-full`}
       >
    <ThemeProvider
       attribute="class"

@@ -6,10 +6,11 @@ import React from 'react';
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
-      <TRPCReactProvider>
+        <TRPCReactProvider>
       <AppSideBar/>
-      <SidebarTrigger></SidebarTrigger>
+      <SidebarInset>
     {children}
+      </SidebarInset>
     </TRPCReactProvider>
     </SidebarProvider>
   );
