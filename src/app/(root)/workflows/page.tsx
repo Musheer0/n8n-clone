@@ -1,15 +1,18 @@
-"use client"
-import { useTRPC } from '@/trpc/client'
-import { useQuery } from '@tanstack/react-query'
-import React from 'react'
-
+import { Button } from "@/components/ui/button"
+import CreateWorkflowButton from "@/components/workflows/create-workflow-button"
+import { PlusIcon } from "lucide-react"
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 const page = () => {
-  const trpc = useTRPC()
-  const {data} = useQuery(trpc.hello.queryOptions({text:"hello"}))
+
   return (
     <div>
-      {JSON.stringify(data)}
-
+   <CreateWorkflowButton>
+    <Button>
+      <PlusIcon/>
+      Create Workflow
+    </Button>
+   </CreateWorkflowButton>
+   <ReactQueryDevtools/>
     </div>
   )
 }
