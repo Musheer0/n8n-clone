@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react'
-import { Button, buttonVariants } from '../ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { authClient } from '@/lib/auth-client'
 import { VariantProps } from 'class-variance-authority'
-import { buttonGroupVariants } from '../ui/button-group'
+import { buttonGroupVariants } from '@/components/ui/button-group'
 type btnProps = {
   children:React.ReactNode,
   loading_state?:React.ReactNode,

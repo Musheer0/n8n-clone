@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
-import { SidebarTrigger } from '../ui/sidebar'
-import { Button } from '../ui/button'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { Button } from '@/components/ui/button'
 import { SaveIcon } from 'lucide-react'
 import { useWorkflowContext } from './workflow-provider'
 import RenameWorkflow from './rename-workflow'

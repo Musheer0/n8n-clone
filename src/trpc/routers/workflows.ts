@@ -122,4 +122,7 @@ export const workflowsRouter = createTRPCRouter({
        await redis.set(getOneWorkflowKey(w.id),updated_workflow,{ex:7*24*60*60});
        return updated_workflow
     })
+
+    //nodes and edges
+    
 })

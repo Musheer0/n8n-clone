@@ -5,9 +5,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,AlertDialogContent, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Loader2Icon, PlusIcon, XIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

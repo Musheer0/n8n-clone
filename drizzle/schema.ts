@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, jsonb, uniqueIndex } from "drizzle-orm/pg-core";
 import {createId} from '@paralleldrive/cuid2'
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -109,3 +109,36 @@ export const workflows = pgTable("workflows",{
     index("by_updated_at").on(table.updatedAt)
   ]
   )
+export const NodeTypeDb = pgEnum("node_type",[
+ "manual","http"
+])
+export const node = pgTable("node",{
+    id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
+    name :text("name").notNull(),
+    type:NodeTypeDb("node_type").default("manual").notNull(),
+    workflow_id:text("workflow_id").notNull().references(()=>workflows.id,{onDelete:"cascade"}),
+    userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
+  position: jsonb("position").notNull().default({x:50, y:50}),
+  data: jsonb("data").notNull().default({}),
+      updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+})
+export const connection = pgTable("connection",{
+    id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
+    workflow_id:text("workflow_id").notNull().references(()=>workflows.id,{onDelete:"cascade"}),
+    fromNodeId:text("from_node_id").notNull().references(()=>node.id,{onDelete:"cascade"}),
+    toNodeId:text("to_node_id").notNull().references(()=>node.id,{onDelete:"cascade"}),
+    from_output:text("from_output").default("main"),
+    to_output:text("to_output").default("main"),
+    userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
+      updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+},(table)=>({
+  relationIdx:uniqueIndex("relation_idx").on(
+    table.fromNodeId,table.toNodeId,table.from_output,table.to_output
+  )
+}))
