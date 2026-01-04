@@ -1,5 +1,6 @@
 import { useTRPC } from "@/trpc/client"
 import { useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react-query"
+import { useReactFlow } from "@xyflow/react";
 import { toast } from "sonner";
 
 export const usePaginatedWorkflows = ()=>{
@@ -28,5 +29,38 @@ export const useRenameWorkflow = (id:string)=>{
             });
             toast.success('updated successfully')
         }
-    }))
+    }))}
+
+export const useSaveWorkflow = (workflowId:string)=>{
+    const {getNodes,getEdges} = useReactFlow();
+    const trpc = useTRPC();
+    const {mutate,...rest} =  useMutation(trpc.nodes_edges.save.mutationOptions({}));
+    return {
+        ...rest,
+        save:()=>{return mutate({
+            workflow_id:workflowId,
+            nodes:getNodes().map((node)=>({
+                data:node.data||{},
+                id:node.id,
+                name:node?.data?.variableName as string ||node.type ||"untitled_node",
+                position:node.position,
+                type:node.type!,
+            })),
+            edges:getEdges().map((edge)=>({
+                id:edge.id,
+                fromNodeId:edge.source,
+                toNodeId:edge.target,
+                toOutput:edge.targetHandle||"main",
+                fromOutput:edge.targetHandle||"main"
+             
+            }))
+        },{
+            onError:(error)=>{
+                toast.error(error.message)
+            },
+            onSuccess:()=>{
+                toast.success('saved successfuly')
+            }
+        })}
+    }
 }

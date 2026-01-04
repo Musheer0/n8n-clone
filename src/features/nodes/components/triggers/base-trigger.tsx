@@ -19,6 +19,7 @@ import { BaseNode, BaseNodeContent } from "../base-node"
 import { NodeStatus } from "@/features/nodes/components/node-status-indicator"
 import { WorkflowNode } from "../workflow-node"
 
+
 const BaseTriggerNode:React.FC<BaseTriggerNodeProps> = memo((
     {
         id,
@@ -32,15 +33,19 @@ const BaseTriggerNode:React.FC<BaseTriggerNodeProps> = memo((
     }
 ) => {
 const {setNodes,setEdges} = useReactFlow();
+
 const handleDelete = ()=>{
   setNodes((currenttNodes)=>{
     const updated_nodes = currenttNodes.filter((n)=>n.id!==id)
     return updated_nodes
   });
+
   setEdges((currentEdges)=>{
     const updatedEdges = currentEdges.filter((e)=>e.source!==id && e.target!==id);
+
     return updatedEdges
   })
+
 }
   return (
 

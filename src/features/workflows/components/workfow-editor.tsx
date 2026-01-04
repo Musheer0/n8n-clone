@@ -18,13 +18,13 @@ import NodeSelector from './node-selector'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import { useCallback } from 'react'
-
+import { useWorkflowContext } from './workflow-provider'
 export default function WorkflowEditor() {
   const { theme } = useTheme()
-
+  const workflow = useWorkflowContext();
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-
+  
   const onConnect = useCallback(
     (connection: Connection) => {
       setEdges((eds) => addEdge(connection, eds))
@@ -33,6 +33,7 @@ export default function WorkflowEditor() {
   )
 
   return (
+   <>
     <ReactFlow
       nodes={nodes}
       edges={edges}
@@ -54,5 +55,6 @@ export default function WorkflowEditor() {
         </NodeSelector>
       </Panel>
     </ReactFlow>
+   </>
   )
 }

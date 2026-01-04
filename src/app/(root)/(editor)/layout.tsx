@@ -1,8 +1,10 @@
 import React from 'react';
-
+import {Provider} from 'jotai'
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    children
+    <Provider>
+      {children}
+    </Provider>
   );
 };
 

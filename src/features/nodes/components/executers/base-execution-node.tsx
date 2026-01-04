@@ -19,6 +19,7 @@ import { BaseNode, BaseNodeContent } from "../base-node"
 import { NodeStatus } from "@/features/nodes/components/node-status-indicator"
 import { WorkflowNode } from "../workflow-node"
 
+
 const BaseExecutionNode:React.FC<BaseExecutionNodeProps> = memo((
     {
         id,
@@ -39,6 +40,7 @@ const handleDelete = ()=>{
   });
   setEdges((currentEdges)=>{
     const updatedEdges = currentEdges.filter((e)=>e.source!==id && e.target!==id);
+
     return updatedEdges
   })
 }
