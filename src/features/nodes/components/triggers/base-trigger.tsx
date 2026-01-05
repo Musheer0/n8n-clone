@@ -18,6 +18,8 @@ import React, { memo } from 'react'
 import { BaseNode, BaseNodeContent } from "../base-node"
 import { NodeStatus } from "@/features/nodes/components/node-status-indicator"
 import { WorkflowNode } from "../workflow-node"
+import { useAtom } from "jotai"
+import { nodeStatusAtom } from "@/store/node-status-store"
 
 
 const BaseTriggerNode:React.FC<BaseTriggerNodeProps> = memo((
@@ -33,7 +35,8 @@ const BaseTriggerNode:React.FC<BaseTriggerNodeProps> = memo((
     }
 ) => {
 const {setNodes,setEdges} = useReactFlow();
-
+const [atom] = useAtom(nodeStatusAtom);
+const nodeStatus =( atom.find((e)=>e.nodeId===id)?.status||"initial") as NodeStatus
 const handleDelete = ()=>{
   setNodes((currenttNodes)=>{
     const updated_nodes = currenttNodes.filter((n)=>n.id!==id)
@@ -56,7 +59,7 @@ const handleDelete = ()=>{
     onSettings={onSettings}
     showToolbar
     >
-   <BaseNode status={status||"initial"} onDoubleClick={onDoubleClick}
+   <BaseNode status={nodeStatus} onDoubleClick={onDoubleClick}
    className="rounded-l-2xl relative group"
    >
    <BaseNodeContent>

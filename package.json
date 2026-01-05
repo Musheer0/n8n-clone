@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "inngest": "inngest-cli dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@inngest/realtime": "^0.4.5",
     "@paralleldrive/cuid2": "^3.0.6",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -56,8 +58,11 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "embla-carousel-react": "^8.6.0",
+    "handlebars": "^4.7.8",
+    "inngest": "^3.48.1",
     "input-otp": "^1.4.2",
     "jotai": "^2.16.1",
+    "ky": "^1.14.2",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "next-themes": "^0.4.6",

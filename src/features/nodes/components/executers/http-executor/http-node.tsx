@@ -22,6 +22,8 @@ const HttpNode = memo((props: NodeProps) => {
       onSettings={()=>setOpen(true)}
       onDoubleClick={()=>setOpen(true)}
       icon={GlobeIcon}
+            status="success"
+
     />
   </>
   );

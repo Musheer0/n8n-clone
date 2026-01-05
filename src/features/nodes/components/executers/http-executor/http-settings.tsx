@@ -31,6 +31,9 @@ import { useReactFlow } from "@xyflow/react"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -38,7 +41,29 @@ type Props = {
   data?: Partial<httpNodeData>
 }
 
-const METHODS_WITH_BODY = ["POST", "PUT", "PATCH"] as const
+/* ---------------- ZOD SCHEMA (ALL HERE) ---------------- */
+
+const httpNodeSchema = z.object({
+  name: z
+    .string()
+    .min(1, "variable name is required")
+    .regex(/^[A-Za-z0-9_]+$/, {
+      message: "variable name can only contain alphabets numbers and _",
+    }),
+
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+
+  url: z
+    .string()
+    .min(1, "url is required")
+    .url("enter a valid url"),
+
+  body: z.string().optional(),
+})
+
+type FormValues = z.infer<typeof httpNodeSchema>
+
+/* ------------------------------------------------------ */
 
 export default function HttpSettingsDialog({
   open,
@@ -48,12 +73,16 @@ export default function HttpSettingsDialog({
 }: Props) {
   const { setNodes } = useReactFlow()
 
-  const form = useForm<httpNodeData>({
+  const form = useForm<FormValues>({
+    resolver: zodResolver(httpNodeSchema),
     defaultValues: {
       name: data?.name || "todo",
       method: data?.method || "GET",
       url: data?.url || "",
-      body: data?.body,
+      body:
+        typeof data?.body === "string"
+          ? data.body
+          : JSON.stringify(data?.body ?? {}, null, 2),
     },
   })
 
@@ -64,11 +93,14 @@ export default function HttpSettingsDialog({
       name: data?.name || "todo",
       method: data?.method || "GET",
       url: data?.url || "",
-      body: data?.body,
+      body:
+        typeof data?.body === "string"
+          ? data.body
+          : JSON.stringify(data?.body ?? {}, null, 2),
     })
   }, [data, form])
 
-  const onSubmit = (values: httpNodeData) => {
+  const onSubmit = (values: FormValues) => {
     setNodes((nodes) =>
       nodes.map((node) =>
         node.id === nodeId
@@ -110,9 +142,7 @@ export default function HttpSettingsDialog({
                   </FormControl>
                   <p className="text-xs text-muted-foreground">
                     Available downstream as{" "}
-                    <code>
-                      {(field.value || "todo")}.http.data
-                    </code>
+                    <code>{(field.value || "todo")}.http.data</code>
                   </p>
                   <FormMessage />
                 </FormItem>
@@ -162,11 +192,13 @@ export default function HttpSettingsDialog({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            {(!(method==="GET" ||method==="DELETE")) && (
+            {/* Body */}
+            {!(method === "GET" || method === "DELETE") && (
               <FormField
                 control={form.control}
                 name="body"
@@ -176,11 +208,7 @@ export default function HttpSettingsDialog({
                     <FormControl>
                       <Textarea
                         placeholder={`{\n  "title": "hello"\n}`}
-                        value={
-                          typeof field.value === "string"
-                            ? field.value
-                            : JSON.stringify(field.value ?? {}, null, 2)
-                        }
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                         rows={6}
                         className="font-mono text-sm"
@@ -189,6 +217,7 @@ export default function HttpSettingsDialog({
                     <p className="text-xs text-muted-foreground">
                       Sent as request body
                     </p>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
