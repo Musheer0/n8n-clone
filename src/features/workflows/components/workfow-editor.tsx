@@ -21,6 +21,10 @@ import { useCallback, useEffect } from 'react'
 import { useWorkflowContext } from './workflow-provider'
 import { useWorkflowNodes } from '@/hooks/use-workflows'
 import ExecuteWorkflowButton from './execute-workflow-button'
+import { useInngestSubscription } from "@inngest/realtime/hooks";
+import { fetchRealtimeNodeStatusToken } from '@/inngest/action'
+import { useAtom } from 'jotai'
+import { nodeStatusAtom } from '@/store/node-status-store'
 
 
 export default function WorkflowEditor() {
@@ -29,6 +33,15 @@ export default function WorkflowEditor() {
   const {data,isPending,isError,error} = useWorkflowNodes(workflow.id)
   const [nodes, setNodes, onNodesChange] = useNodesState(data?.nodes||[])
   const [edges, setEdges, onEdgesChange] = useEdgesState(data?.edges||[])
+ const {data:nodeStatusData} = useInngestSubscription({
+  refreshToken:fetchRealtimeNodeStatusToken
+ });
+ const [_,setAtom] = useAtom(nodeStatusAtom)
+  useEffect(()=>{
+  if(nodeStatusData){
+    setAtom(nodeStatusData.map((e)=>({nodeId:e.data.nodeId,status:e.data.status})))
+  }
+  },[nodeStatusData])
   useEffect(()=>{
    if(data){
      setNodes(data?.nodes||[]);

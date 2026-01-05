@@ -5,7 +5,7 @@ import { useWorkflow } from "@/hooks/use-workflows";
 import { Loader2Icon, OctagonX } from "lucide-react";
 import { createContext, useContext } from "react"
 
-const workflowContext = createContext<tworkflow|null>(null);
+const workflowContext = createContext<tworkflow |null>(null);
 import React from 'react'
 
 const WorkflowProvider = ({id,children}:{id:string,children:React.ReactNode}) => {

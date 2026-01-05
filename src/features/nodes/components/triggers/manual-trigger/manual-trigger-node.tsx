@@ -10,6 +10,7 @@ const ManualTriggerNode = memo((props: NodeProps) => {
       {...props}
       name="Manual Trigger"
       icon={MouseIcon}
+      status="loading"
     />
   );
 });

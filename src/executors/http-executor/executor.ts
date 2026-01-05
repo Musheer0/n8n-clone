@@ -2,6 +2,7 @@ import { NonRetriableError } from "inngest";
 import { NodeExecutor } from "../types";
 import ky ,{HTTPError, type Options} from 'ky'
 import handlebars from 'handlebars'
+import { NodeChannel } from "@/inngest/channels/node-channel";
 handlebars.registerHelper("json",(ctx)=>new handlebars.SafeString(JSON.stringify(ctx,null,2)))
 type HttpRequest ={
     url?:string,
@@ -13,24 +14,26 @@ export const HttpExecutor: NodeExecutor = async ({
   context,
   node,
   step,
+  publish
+
 }) => {
 
   if (!node.data) {
-    // await publish(httpChannel().status({ status: "error", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node is not configured");
   }
 
   const data = node.data as HttpRequest;
 
   if (!data.url|| !data.name) {
-    // await publish(httpChannel().status({ status: "error", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node config incomplete");
   }
 
   return step.run("http-execution", async () => {
-    // await publish(httpChannel().status({ status: "loading", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "success", nodeId: node.id }));
   if (!data.url|| !data.name) {
-    // await publish(httpChannel().status({ status: "error", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node config incomplete");
   }
     const url = handlebars.compile(data.url)(context);
@@ -50,7 +53,7 @@ export const HttpExecutor: NodeExecutor = async ({
         ? await response.json()
         : await response.text();
 
-    //   await publish(httpChannel().status({ status: "success", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "success", nodeId: node.id }));
 
       return {
         ...context,
@@ -67,7 +70,7 @@ export const HttpExecutor: NodeExecutor = async ({
     } catch (err) {
 
       if (err instanceof HTTPError) {
-        // await publish(httpChannel().status({ status: "error", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
 
         return {
           ...context,
