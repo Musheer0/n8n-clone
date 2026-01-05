@@ -10,6 +10,7 @@ import { tworkflow } from "@/db/types/workflow";
 import { and, desc, eq, lt } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { PAGE_SIZE } from "@/constants";
+import { ExecuteRouter } from "./execute";
 
 export const workflowsRouter = createTRPCRouter({
     create:protectedProcedure.input(
@@ -121,8 +122,7 @@ export const workflowsRouter = createTRPCRouter({
        .returning()
        await redis.set(getOneWorkflowKey(w.id),updated_workflow,{ex:7*24*60*60});
        return updated_workflow
-    })
+    }),
 
-    //nodes and edges
-    
+    execute:ExecuteRouter    
 })

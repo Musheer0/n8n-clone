@@ -8,6 +8,7 @@ import { connection, node, workflows } from "../../../drizzle/schema";
 import { tconnection, tnode, tnode_type, tworkflow } from "@/db/types/workflow";
 import { TRPCError } from "@trpc/server";
 import { redis } from "@/redis/client";
+import { formatEdges, formatNodes } from "../utils/format-data";
 
 export const nodes_edges_router = createTRPCRouter({
     save:protectedProcedure
@@ -94,7 +95,10 @@ export const nodes_edges_router = createTRPCRouter({
     getData:protectedProcedure.input(z.object({workflowId:z.string()}))
     .query(async({ctx,input})=>{
         const cached_data = await redis.get<{nodes:tnode[],edges:tconnection[]}>(getNodeEdgesKey(input.workflowId,ctx.auth.user.id));
-        if(cached_data) return cached_data;
+        if(cached_data) return {
+            nodes:formatNodes(cached_data.nodes),
+            edges:formatEdges(cached_data.edges)
+        }
         const nodes = await db.query.node.findMany({
             where:and(
                 eq(node.workflow_id, input.workflowId),
@@ -108,8 +112,8 @@ export const nodes_edges_router = createTRPCRouter({
             )
         });
         return {
-            nodes,
-            edges
+            nodes:formatNodes(nodes),
+            edges:formatEdges(edges)
         }
     })
 })

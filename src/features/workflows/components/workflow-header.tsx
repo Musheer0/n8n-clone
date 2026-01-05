@@ -18,9 +18,11 @@ const WorkflowHeader = () => {
         <p className='text-xs text-muted-foreground'>unsaved changes</p>
       </div>
       <SaveButton id={workflow.id}> 
-        <Button size={"sm"}>
+        <Button asChild slot='div' size={"sm"}>
+       <>
         <SaveIcon/>
         Save Changes
+       </>
       </Button>
       </SaveButton>
     </div>

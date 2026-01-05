@@ -1,9 +1,9 @@
 import { NodeTypes } from "@xyflow/react";
 import MannualTriggerNode from "./components/triggers/manual-trigger/manual-trigger-node";
 import { TNodeRegistry } from "./types";
-import HttpExecutorNode from "./components/executers/http-executor/http-executor";
+import HttpNode from "./components/executers/http-executor/http-node";
 
 export const NodeRegistry:TNodeRegistry ={
     "manual":MannualTriggerNode,
-    "http":HttpExecutorNode
+    "http":HttpNode
 } 

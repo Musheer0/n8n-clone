@@ -51,7 +51,7 @@ export const useSaveWorkflow = (workflowId:string)=>{
                 fromNodeId:edge.source,
                 toNodeId:edge.target,
                 toOutput:edge.targetHandle||"main",
-                fromOutput:edge.targetHandle||"main"
+                fromOutput:edge.sourceHandle||"main"
              
             }))
         },{
@@ -63,4 +63,15 @@ export const useSaveWorkflow = (workflowId:string)=>{
             }
         })}
     }
+};
+export const useWorkflowNodes = (workflowId:string)=>{
+    const trpc = useTRPC();
+    return useQuery(trpc.nodes_edges.getData.queryOptions({workflowId}))
+};
+export const useExecuteWorkflow = ()=>{
+    const trpc = useTRPC();
+    return useMutation(trpc.workflow.execute.start.mutationOptions({
+        onSuccess:()=>toast.success("workflow started successfully"),
+        onError:(data)=>toast.error(data.message)
+    }))
 }
