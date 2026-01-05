@@ -9,6 +9,7 @@ import { tconnection, tnode, tworkflow } from "@/db/types/workflow";
 import { TRPCError } from "@trpc/server";
 import { redis } from "@/redis/client";
 import { topologicalSort } from "@/lib/topoogical-sort";
+import { inngest } from "@/inngest/client";
 
 export const ExecuteRouter = createTRPCRouter({
   start: protectedProcedure
@@ -75,8 +76,19 @@ export const ExecuteRouter = createTRPCRouter({
         await redis.set(cacheKey, { nodes, edges });
       }
       const sorted_nodes = topologicalSort(nodes,edges);
-      // todo remove log after implementing inngest
-      console.log(sorted_nodes)
+      await inngest.send({
+        name:"execute/workflow",
+        data:{
+          user:{email:ctx.auth.user.email,id:ctx.auth.user.id},
+          nodes:sorted_nodes.map((e)=>({
+            name:e.name,
+            data:e.data||{},
+            type:e.type, 
+            id:e.id,
+            workflow_id:e.workflow_id
+          }))
+        }
+      })
       return {
         success:true
       }
