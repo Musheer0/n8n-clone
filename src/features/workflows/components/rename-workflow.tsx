@@ -2,8 +2,8 @@
 
 import React, { useState } from "react"
 import { SaveIcon } from "lucide-react"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { useWorkflowContext } from "./workflow-provider"
 import { useRenameWorkflow } from "@/hooks/use-workflows"
 

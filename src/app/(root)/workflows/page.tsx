@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import CreateWorkflowButton from "@/components/workflows/create-workflow-button"
-import WorkflowList from "@/components/workflows/workflow-list"
+import CreateWorkflowButton from "@/features/workflows/components/create-workflow-button"
+import WorkflowList from "@/features/workflows/components/workflow-list"
 import { PlusIcon } from "lucide-react"
 
 const Page = () => {
