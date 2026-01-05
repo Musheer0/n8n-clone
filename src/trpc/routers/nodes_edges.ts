@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "../init";
 import { checkCacheAndQuery } from "@/redis/utils/caache-exists";
 import { getNodeEdgesKey, getOneWorkflowKey } from "@/redis/keys/workflows";
 import db from "@/db";
-import { and, eq, inArray, not } from "drizzle-orm";
+import { and, eq, inArray, not, sql } from "drizzle-orm";
 import { connection, node, workflows } from "../../../drizzle/schema";
 import { tconnection, tnode, tnode_type, tworkflow } from "@/db/types/workflow";
 import { TRPCError } from "@trpc/server";
@@ -40,55 +40,68 @@ export const nodes_edges_router = createTRPCRouter({
         });
         if(!w) throw new TRPCError({code:"NOT_FOUND", message:"workflow does not exits"});
         if(w.user_id!==ctx.auth.user.id) throw new TRPCError({code:"UNAUTHORIZED",message:"your not authorized to edit this workflow"});
-        const inserted_nodes:tnode[] = []
-        const inserted_edges:tconnection[] = []
-        for (const n of input.nodes){
-            const [inserted_node] = await db.insert(node).values({
-                name:n.name,
-                type:n.type as tnode_type ,
-                data:n.data||{},
-                position:n.position,
-                id:n.id,
-                userId: ctx.auth.user.id,
-                workflow_id:input.workflow_id
-            }).onConflictDoUpdate({
-                target:node.id,
-                set:{
-                name:n.name,
-                type:n.type as tnode_type ,
-                data:n.data||{},
-                position:n.position,            
-                }
-            }).returning();
-            if(inserted_node) inserted_nodes.push(inserted_node)
+        await db.transaction(async(tx)=>{
+               const inserted_nodes = await tx.insert(node).values(
+        input.nodes.map(n => ({
+            name: n.name,
+            type: n.type as tnode_type,
+            data: n.data || {},
+            position: n.position,
+            userId: ctx.auth.user.id,
+            workflow_id: input.workflow_id,
+            id:n.id
+        }))
+    ).onConflictDoUpdate({
+        target: node.id,
+        set: {
+            name: sql`excluded.name`,
+            type: sql`excluded.type`,
+            data: sql`excluded.data`,
+            position: sql`excluded.position`,
+            updatedAt: sql`now()` 
         }
-         for (const e of input.edges){
-            const [inserted_edge] = await db.insert(connection).values({
-                fromNodeId:e.fromNodeId,
-                toNodeId:e.toNodeId,
-                from_output:e.fromOutput,
-                to_output:e.toOutput,
-                id:e.id,
-                userId: ctx.auth.user.id,
-                workflow_id:input.workflow_id
-            }).onConflictDoUpdate({
-                target:connection.id,
-                set:{
-                fromNodeId:e.fromNodeId,
-                toNodeId:e.toNodeId,
-                from_output:e.fromOutput,
-                to_output:e.toOutput,          
-                }
-            }).returning()
-           if(inserted_edge)  inserted_edges.push(inserted_edge)
+    }).returning();
+ const inserted_edges = await tx.insert(connection).values(
+        input.edges.map(e => ({
+            fromNodeId: e.fromNodeId,
+            toNodeId: e.toNodeId,
+            from_output: e.fromOutput,
+            to_output: e.toOutput,
+            userId: ctx.auth.user.id,
+            workflow_id: input.workflow_id,
+            id:e.id
+        }))
+    ).onConflictDoUpdate({
+        target: connection.id,
+        set: {
+            fromNodeId: sql`excluded."from_node_id"`,
+            toNodeId: sql`excluded."to_node_id"`,
+            from_output: sql`excluded.from_output`,
+            to_output: sql`excluded.to_output`,
+            updatedAt: sql`now()` 
         }
+    }).returning();
+     
        
         //cache the node results
         await redis.set(getNodeEdgesKey(w.id,w.user_id),{nodes:inserted_nodes,edges:inserted_edges},{ex:604798});
         //delete orphans
-        await db.delete(node).where(not(inArray(node.id,inserted_nodes.map((e)=>e.id))));
-        await db.delete(connection).where(not(inArray(connection.id,inserted_nodes.map((e)=>e.id))));
-        return {
+    await tx.delete(node).where(
+       and(
+           eq(node.workflow_id, input.workflow_id),
+           eq(node.userId, ctx.auth.user.id),
+           not(inArray(node.id, inserted_nodes.map((e)=>e.id)))
+       )
+   );
+   await tx.delete(connection).where(
+       and(
+           eq(connection.workflow_id, input.workflow_id),
+           eq(connection.userId, ctx.auth.user.id),
+           not(inArray(connection.id, inserted_edges.map((e)=>e.id)))
+       )
+   );
+        })
+         return {
             success:true
         }
     }),

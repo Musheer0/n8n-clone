@@ -90,25 +90,7 @@ const NodeSelector = ({ children }: { children: React.ReactNode }) => {
                 return nodes;
             }   
         }
-        const hasInitialNode = nodes.some(n=>(n.type)==="initial")
-        if(hasInitialNode){
            const cx = window.innerWidth/2;
-           const cy = window.innerHeight/2;
-           const flowPosition = screenToFlowPosition({
-            x:cx+(Math.random()-0.5)*200,
-            y:cy+(Math.random()-0.5)*200,
-           });
-           const newNode = {
-            id:createId(),
-            data:{},
-            position:flowPosition,
-            type:nodeType.type
-           };
-                   onOpenChange(false)
-
-           return [newNode]
-        }else{
-               const cx = window.innerWidth/2;
            const cy = window.innerHeight/2;
            const flowPosition = screenToFlowPosition({
             x:cx+(Math.random()-0.5)*200,
@@ -123,7 +105,6 @@ const NodeSelector = ({ children }: { children: React.ReactNode }) => {
         onOpenChange(false)
 
            return [...nodes,newNode]
-        }
          })
 
 

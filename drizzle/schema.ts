@@ -115,7 +115,7 @@ export const NodeTypeDb = pgEnum("node_type",[
 export const node = pgTable("node",{
     id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
     name :text("name").notNull(),
-    type:NodeTypeDb("node_type").default("manual").notNull(),
+    type:NodeTypeDb("type").default("manual").notNull(),
     workflow_id:text("workflow_id").notNull().references(()=>workflows.id,{onDelete:"cascade"}),
     userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
   position: jsonb("position").notNull().default({x:50, y:50}),

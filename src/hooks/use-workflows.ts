@@ -42,7 +42,7 @@ export const useSaveWorkflow = (workflowId:string)=>{
             nodes:getNodes().map((node)=>({
                 data:node.data||{},
                 id:node.id,
-                name:node?.data?.variableName as string ||node.type ||"untitled_node",
+                name:node?.data?.name as string ||node.type ||"untitled_node",
                 position:node.position,
                 type:node.type!,
             })),
