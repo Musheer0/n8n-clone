@@ -31,7 +31,7 @@ export const HttpExecutor: NodeExecutor = async ({
   }
 
   return step.run("http-execution", async () => {
-    await publish(NodeChannel().status({ status: "success", nodeId: node.id }));
+    await publish(NodeChannel().status({ status: "loading", nodeId: node.id }));
   if (!data.url|| !data.name) {
     await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node config incomplete");
@@ -52,8 +52,8 @@ export const HttpExecutor: NodeExecutor = async ({
       const payload = contentType.includes("json")
         ? await response.json()
         : await response.text();
-
     await publish(NodeChannel().status({ status: "success", nodeId: node.id }));
+
 
       return {
         ...context,

@@ -55,9 +55,7 @@ const httpNodeSchema = z.object({
 
   url: z
     .string()
-    .min(1, "url is required")
-    .url("enter a valid url"),
-
+    .min(1, "url is required"),
   body: z.string().optional(),
 })
 

@@ -41,7 +41,7 @@ export const nodes_edges_router = createTRPCRouter({
         if(!w) throw new TRPCError({code:"NOT_FOUND", message:"workflow does not exits"});
         if(w.user_id!==ctx.auth.user.id) throw new TRPCError({code:"UNAUTHORIZED",message:"your not authorized to edit this workflow"});
         await db.transaction(async(tx)=>{
-               const inserted_nodes = await tx.insert(node).values(
+               const inserted_nodes =input.nodes.length===0 ? []: await tx.insert(node).values(
         input.nodes.map(n => ({
             name: n.name,
             type: n.type as tnode_type,
@@ -61,7 +61,7 @@ export const nodes_edges_router = createTRPCRouter({
             updatedAt: sql`now()` 
         }
     }).returning();
- const inserted_edges = await tx.insert(connection).values(
+ const inserted_edges =input.edges.length===0 ? []: await tx.insert(connection).values(
         input.edges.map(e => ({
             fromNodeId: e.fromNodeId,
             toNodeId: e.toNodeId,

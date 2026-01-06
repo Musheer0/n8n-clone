@@ -33,15 +33,32 @@ export default function WorkflowEditor() {
   const {data,isPending,isError,error} = useWorkflowNodes(workflow.id)
   const [nodes, setNodes, onNodesChange] = useNodesState(data?.nodes||[])
   const [edges, setEdges, onEdgesChange] = useEdgesState(data?.edges||[])
- const {data:nodeStatusData} = useInngestSubscription({
+ const {data:nodeStatusData,latestData} = useInngestSubscription({
   refreshToken:fetchRealtimeNodeStatusToken
  });
- const [_,setAtom] = useAtom(nodeStatusAtom)
-  useEffect(()=>{
-  if(nodeStatusData){
-    setAtom(nodeStatusData.map((e)=>({nodeId:e.data.nodeId,status:e.data.status})))
-  }
-  },[nodeStatusData])
+ const [atom,setAtom] = useAtom(nodeStatusAtom)
+useEffect(() => {
+  if (!latestData?.data) return;
+
+  const { nodeId, status } = latestData.data;
+
+  setAtom((prev) => {
+    const exists = prev.some((n) => n.nodeId === nodeId);
+
+    if (exists) {
+      // update status
+      return prev.map((n) =>
+        n.nodeId === nodeId
+          ? { ...n, status }
+          : n
+      );
+    }
+
+    // push new node
+    return [...prev, { nodeId, status }];
+  });
+}, [latestData, setAtom]);
+
   useEffect(()=>{
    if(data){
      setNodes(data?.nodes||[]);
