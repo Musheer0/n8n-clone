@@ -4,12 +4,14 @@ import { MannualExecutor } from "./manual-trigger/executor";
 import { HttpExecutor } from "./http-executor/executor";
 import { NonRetriableError } from "inngest";
 import { GoogleFormExecutor } from "./google-form-trigger/executor";
+import { MailSenderExecutor } from "./smpt-mail-executor/executor";
 
 type executors = Record<tnode_type,NodeExecutor>
 export const executors:executors = {
     "manual":MannualExecutor,
     "http":HttpExecutor,
-    "googleForm":GoogleFormExecutor
+    "googleForm":GoogleFormExecutor,
+    "smpt_mail":MailSenderExecutor
 }
 export const getExecutor = (type:tnode_type)=>{
     const executor = executors[type]
