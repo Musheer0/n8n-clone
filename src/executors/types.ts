@@ -8,6 +8,7 @@ export interface NodeExexuteParams{
     node:InferSelectModel<typeof node>,
     context:WorkflowContext,
     step:StepTools,
-    publish:Realtime.PublishFn
+    publish:Realtime.PublishFn,
+    args?:Record<string,any>
 }
 export type NodeExecutor = (params:NodeExexuteParams)=>Promise<WorkflowContext>

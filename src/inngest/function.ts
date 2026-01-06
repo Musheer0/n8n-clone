@@ -24,16 +24,28 @@ export const execute = inngest.createFunction(
  async ({ event, step,publish }) => {
   const {data} = event;
   if(!(data?.workflowId||data.workflow_id)){
-    throw new TRPCError({code:"BAD_REQUEST", message:'workflow id is required'});
+    throw new NonRetriableError('workflow id is required')
   }
   if(!data.user.id){
-    throw new TRPCError({code:"UNAUTHORIZED", message:'un authorized'});
+    throw new NonRetriableError('un authorized')
   }
   const nodes = await getNodes(data?.workflowId||data.workflow_id,data.user.id)
    let  context = data?.webhook||{};
    for (const n of nodes){
       const executor = getExecutor(n.type);
-      const new_context = await executor({context,node:n,step,publish});
+      const nodeData = n.data as any
+      console.log(nodeData)
+      if(n.type==="smpt_mail" && !(!nodeData?.to ||!nodeData?.from || !nodeData.subject || (!nodeData?.content ||!nodeData.html ))){
+               await publish(NodeChannel().status({status:"error",nodeId:n.id}));
+
+    throw new NonRetriableError('smpt mail not configured')
+
+      }
+      const new_context = await executor({context,node:n,step,publish,args:{
+        ...nodeData,
+            smtp_user:process.env.TEST_APP,
+            smtp_passs:process.env.TEST_PASS
+      }});
       context = new_context
 
    }

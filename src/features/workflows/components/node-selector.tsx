@@ -16,6 +16,7 @@ import { tnode_type } from '@/db/types/workflow'
 import {
   GlobeIcon,
   LucideIcon,
+  MailIcon,
   MouseIcon,
   PlusIcon,
   XIcon
@@ -61,6 +62,12 @@ const nodelist: nodelist = [
         description: "execute a http request and use its data accross workflows",
         type: "http",
         icon: GlobeIcon
+      },
+         {
+        name: "Mail Execution",
+        description: "execute a smpt mail",
+        type: "smpt_mail",
+        icon: MailIcon
       }
     ]
   }
