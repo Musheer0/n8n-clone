@@ -44,6 +44,12 @@ const nodelist: nodelist = [
         description: "trigger a workflow mannualy",
         type: "manual",
         icon: MouseIcon
+      },
+       {
+        name: "Google Forms Trigger",
+        description: "trigger a workflow through google forms",
+        type: "googleForm",
+        icon: '/gforms.svg'
       }
     ]
   },

@@ -3,7 +3,6 @@ import toposort from 'toposort'
 export const topologicalSort = (nodes:tnode[], connections:tconnection[])=>{
     if(connections.length==0) return nodes;
     const edges:[string,string][] =connections.map((c)=>[c.fromNodeId,c.toNodeId])
-    console.log(edges);
      const connected_nodes = new Set<string>([]);
      for (const c of connections){
         connected_nodes.add(c.fromNodeId);

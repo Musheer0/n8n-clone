@@ -110,7 +110,7 @@ export const workflows = pgTable("workflows",{
   ]
   )
 export const NodeTypeDb = pgEnum("node_type",[
- "manual","http"
+ "manual","http","googleForm"
 ])
 export const node = pgTable("node",{
     id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),

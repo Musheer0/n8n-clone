@@ -42,51 +42,12 @@ export const ExecuteRouter = createTRPCRouter({
         });
       }
 
-      const cacheKey = getNodeEdgesKey(
-        input.workflow_id,
-        ctx.auth.user.id
-      );
-
-      const cachedData = await redis.get<{
-        nodes: tnode[];
-        edges: tconnection[];
-      }>(cacheKey);
-
-      let nodes: tnode[] = [];
-      let edges: tconnection[] = [];
-
-      if (cachedData) {
-        nodes = cachedData.nodes;
-        edges = cachedData.edges;
-      } else {
-        nodes = await db.query.node.findMany({
-          where: and(
-            eq(node.workflow_id, input.workflow_id),
-            eq(node.userId, ctx.auth.user.id)
-          ),
-        });
-
-        edges = await db.query.connection.findMany({
-          where: and(
-            eq(connection.workflow_id, input.workflow_id),
-            eq(connection.userId, ctx.auth.user.id)
-          ),
-        });
-
-        await redis.set(cacheKey, { nodes, edges });
-      }
-      const sorted_nodes = topologicalSort(nodes,edges);
+     
       await inngest.send({
         name:"execute/workflow",
         data:{
-          user:{email:ctx.auth.user.email,id:ctx.auth.user.id},
-          nodes:sorted_nodes.map((e)=>({
-            name:e.name,
-            data:e.data||{},
-            type:e.type, 
-            id:e.id,
-            workflow_id:e.workflow_id
-          }))
+          user:{id:ctx.auth.user.id},
+          workflow_id:workflow.id
         }
       })
       return {
