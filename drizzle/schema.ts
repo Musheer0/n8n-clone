@@ -117,10 +117,10 @@ export const CredentialsTypeDb = pgEnum("credentialsType",[
 ])
 export const credentails = pgTable("credentials",{
       id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
-      name:text("name"),
-      text:CredentialsTypeDb("type"),
+      name:text("name").notNull(),
+      type:CredentialsTypeDb("type").notNull(),
       userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
-      credential:text("credential"),
+      credential:text("credential").notNull(),
       
 
 })
