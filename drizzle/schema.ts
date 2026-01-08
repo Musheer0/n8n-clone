@@ -121,6 +121,11 @@ export const credentails = pgTable("credentials",{
       type:CredentialsTypeDb("type").notNull(),
       userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
       credential:text("credential").notNull(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
       
 
 })

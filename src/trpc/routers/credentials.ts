@@ -2,15 +2,15 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 import db from "@/db";
 import { credentails } from "../../../drizzle/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, lt, desc } from "drizzle-orm";
 import { tCredentailsType, tcredentials } from "@/db/types/credentials";
 import { redis } from "@/redis/client";
 import {
   getCredentialKey,
   getCredentialsByTypeKey,
-  getCredentialsKey,
 } from "@/redis/keys/credentials";
 import { encrypt } from "@/lib/encrypt-decrypt";
+import { PAGE_SIZE } from "@/constants";
 
 export const credentialsRouter = createTRPCRouter({
   // CREATE (already good, just keeping for context)
@@ -23,6 +23,7 @@ export const credentialsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+     
       const userId = ctx.auth.user.id;
       const encrypted_credential = encrypt(userId, input.credential);
 
@@ -41,11 +42,6 @@ export const credentialsRouter = createTRPCRouter({
         getCredentialKey(new_credential.id, new_credential.type),
         new_credential
       );
-
-      // cache all
-      const prevAll =
-        (await redis.get<tcredentials[]>(getCredentialsKey(userId))) || [];
-      await redis.set(getCredentialsKey(userId), [...prevAll, new_credential]);
 
       // cache by type
       const prevByType =
@@ -94,21 +90,45 @@ export const credentialsRouter = createTRPCRouter({
       return credential;
     }),
 
-  // GET ALL (NO PAGINATION)
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+
+getAll: protectedProcedure
+  .input(
+    z.object({
+      cursor: z.string().optional(), // ISO string date
+    })
+  )
+  .query(async ({ ctx, input }) => {
     const userId = ctx.auth.user.id;
+    let cursor = input.cursor;
 
-    const cacheKey = getCredentialsKey(userId);
-    const cached = await redis.get<tcredentials[]>(cacheKey);
-    if (cached) return cached;
+    const data = cursor
+      ? await db
+          .select()
+          .from(credentails)
+          .where(
+            and(
+              eq(credentails.userId, userId),
+              lt(credentails.updatedAt, new Date(cursor)) // older than cursor
+            )
+          )
+          .orderBy(desc(credentails.updatedAt))
+          .limit(PAGE_SIZE + 1)
+      : await db
+          .select()
+          .from(credentails)
+          .where(eq(credentails.userId, userId))
+          .orderBy(desc(credentails.updatedAt))
+          .limit(PAGE_SIZE + 1);
 
-    const credentials = await db
-      .select()
-      .from(credentails)
-      .where(eq(credentails.userId, userId));
+    const nextCursor =
+      data.length > PAGE_SIZE
+        ? data[PAGE_SIZE].updatedAt.toISOString()
+        : undefined;
 
-    await redis.set(cacheKey, credentials);
-    return credentials;
+    return {
+      credentials: data.slice(0, PAGE_SIZE), // drop extra row
+      cursor: nextCursor,
+    };
   }),
 
   // GET ALL BY TYPE
@@ -165,17 +185,6 @@ export const credentialsRouter = createTRPCRouter({
 
       // delete single
       await redis.del(getCredentialKey(input.id, type));
-
-      // update all cache
-      const allCache = await redis.get<tcredentials[]>(
-        getCredentialsKey(userId)
-      );
-      if (allCache) {
-        await redis.set(
-          getCredentialsKey(userId),
-          allCache.filter((c) => c.id !== input.id)
-        );
-      }
 
       // update type cache
       const typeCache = await redis.get<tcredentials[]>(
