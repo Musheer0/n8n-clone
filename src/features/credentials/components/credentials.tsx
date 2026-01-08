@@ -11,10 +11,12 @@ import {
   Loader2,
   AlertTriangle,
   KeyIcon,
+  TrashIcon,
 } from "lucide-react"
 import { usePaginatedCredentials } from "@/hooks/use-credentials-hook"
 import { tcredentials } from "@/db/types/credentials"
 import RenderCredentialIcon from "./render-credential-icon"
+import { DeleteCredentialAlertDialog } from "./delete-credential"
 
 /* --------------------------------
    Workflow Card (pure / dumb)
@@ -30,9 +32,16 @@ const CredentialCard = ({ credential }: CredentialCardProps) => {
         <CardHeader className="flex flex-row items-center gap-3">
          <RenderCredentialIcon type={credential.type} className="size-7"/>
           <div>
-            <CardTitle className="text-base">
+            <div className="flex w-full justify-between items-center">
+              <CardTitle className="text-base">
               {credential.name}
             </CardTitle>
+            <DeleteCredentialAlertDialog id={credential.id} type={credential.type}>
+              <Button variant={"destructive"} size={"icon-sm"}>
+                <TrashIcon/>
+              </Button>
+            </DeleteCredentialAlertDialog>
+            </div>
             <CardDescription>
               Created{" "}
               {new Date(credential.createdAt).toLocaleDateString()}
