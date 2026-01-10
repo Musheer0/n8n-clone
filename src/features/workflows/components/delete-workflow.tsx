@@ -14,31 +14,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteCredential } from "@/hooks/use-credentials-hook";
 import { tCredentailsType } from "@/db/types/credentials";
+import { useDeleteWorkflow } from "@/hooks/use-workflows";
 import { toast } from "sonner";
 
 type Props = {
   children: React.ReactNode;
   id: string;
-  type: tCredentailsType;
 };
 
-export function DeleteCredentialAlertDialog({
+export function DeleteWorkflowDialog({
   children,
   id,
-  type,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-  const { mutate, isPending } = useDeleteCredential();
+  const { mutate, isPending } = useDeleteWorkflow()
 
   const onDelete = () => {
     mutate(
-      { id, type },
+      { id, },
       {
         onSuccess: () => {
           setOpen(false);
         },
-                onError:(err)=>toast.error(err.message)
-        
+        onError:(err)=>toast.error(err.message)
       }
     );
   };
@@ -53,11 +51,11 @@ export function DeleteCredentialAlertDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-red-600">
-            Delete credential?
+            Delete Workflow?
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action is <b>permanent</b>.  
-            The credential will be removed from the database and cache.
+            The workflow will be removed from the database and cache.
             <br />
             <span className="text-red-500 font-medium">
               You cannot undo this.

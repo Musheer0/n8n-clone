@@ -46,18 +46,25 @@ export const useCreateCredential = () => {
       onSuccess: (data) => {
         // update getAll cache
         queryClient.setQueriesData(
-          { queryKey: trpc.credentials.getAll.queryKey() },
-          (old: InfiniteData<tcredentials> | undefined) => {
-            if (!old) {
+          { queryKey: trpc.credentials.getAll.infiniteQueryKey() },
+          (old: InfiniteData<{credentials:tcredentials[]}> | undefined) => {
+     if (!old) {
       return {
-        pages: [data],
-        pageParams: [],
+        pages: [{ credentials: [data] }],
+        pageParams: [null],
       }
     }
 
     return {
       ...old,
-      pages: [...old.pages, data],
+      pages: old.pages.map((page, index) =>
+        index === 0
+          ? {
+              ...page,
+              credentials: [data, ...page.credentials],
+            }
+          : page
+      ),
     }
           }
         );
@@ -95,9 +102,20 @@ export const useDeleteCredential = () => {
 
         // remove from getAll cache
         queryClient.setQueriesData(
-          { queryKey: trpc.credentials.getAll.queryKey() },
-          (old: any[] | undefined) =>
-            old?.filter((c) => c.id !== deleted.id)
+          { queryKey: trpc.credentials.getAll.infiniteQueryKey() },
+          (old: InfiniteData<{credentials:tcredentials[]}>| undefined) =>{
+               if (!old) {
+      return {
+        pages: [{ credentials: [] }],
+        pageParams: [null],
+      }
+    }
+
+    return {
+      ...old,
+     pages: old.pages.map((c)=>({credentials:c.credentials.filter((e)=>e.id!==deleted.id)}))
+    }
+          }
         );
 
         // remove from getAllByType cache

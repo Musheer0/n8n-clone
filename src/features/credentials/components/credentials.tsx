@@ -31,9 +31,9 @@ const CredentialCard = ({ credential }: CredentialCardProps) => {
 <Card className="hover:shadow-md w-full max-w-sm transition">
         <CardHeader className="flex flex-row items-center gap-3">
          <RenderCredentialIcon type={credential.type} className="size-7"/>
-          <div>
+          <div className="w-full">
             <div className="flex w-full justify-between items-center">
-              <CardTitle className="text-base">
+              <CardTitle className="text-base flex-1 line-clamp-1">
               {credential.name}
             </CardTitle>
             <DeleteCredentialAlertDialog id={credential.id} type={credential.type}>

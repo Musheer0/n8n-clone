@@ -14,9 +14,11 @@ import {
   Loader2,
   AlertTriangle,
   PlusCircleIcon,
+  Trash2Icon,
 } from "lucide-react"
 import Link from "next/link"
 import CreateWorkflowButton from "./create-workflow-button"
+import { DeleteWorkflowDialog } from "./delete-workflow"
 
 /* --------------------------------
    Workflow Card (pure / dumb)
@@ -28,25 +30,37 @@ type WorkflowCardProps = {
 
 const WorkflowCard = ({ workflow }: WorkflowCardProps) => {
   return (
-    <Link
-      href={`/workflows/${workflow.id}`}
-      className="w-full max-w-sm"
-    >
-      <Card className="hover:shadow-md transition">
+    <Card className="hover:shadow-md transition w-full max-w-md">
         <CardHeader className="flex flex-row items-center gap-3">
           <Workflow className="h-5 w-5 text-muted-foreground" />
-          <div>
-            <CardTitle className="text-base">
+          <div className="w-full">
+           <div
+           onClick={(e)=>e.stopPropagation()}
+           className="w-full flex items-center justify-between">
+           <Link
+                     href={`/workflows/${workflow.id}`}
+
+           >
+             <CardTitle className="text-base">
               {workflow.name}
             </CardTitle>
+           </Link>
+            <DeleteWorkflowDialog id={workflow.id}>
+              <Button size={"icon-sm"} variant={"ghost"}><Trash2Icon/></Button>
+            </DeleteWorkflowDialog>
+           </div>
+        <Link
+          href={`/workflows/${workflow.id}`}
+          className=""
+        >
             <CardDescription>
               Created{" "}
               {new Date(workflow.createdAt).toLocaleDateString()}
             </CardDescription>
+    </Link>
           </div>
         </CardHeader>
       </Card>
-    </Link>
   )
 }
 
@@ -121,7 +135,9 @@ const WorkflowList = () => {
           No workflows yet
         </p>
         <CreateWorkflowButton>
+         <>
           <PlusCircleIcon/> Create one?
+         </>
         </CreateWorkflowButton>
       </div>
     )
