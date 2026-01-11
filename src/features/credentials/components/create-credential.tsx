@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateCredential } from "@/hooks/use-credentials-hook";
-import { tCredentailsType } from "@/db/types/credentials";
+import { tCredentailsType, tcredentials } from "@/db/types/credentials";
 import { CredentialsRegistry } from "../credentials-registry";
 import {
   Select,
@@ -25,14 +25,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
 type Props = {
   children: React.ReactNode;
+  type?:tCredentailsType,
+  onCreate?:(data:tcredentials)=>void
 };
 
-export function CreateCredentialAlertDialog({ children }: Props) {
+export function CreateCredentialAlertDialog({ children,type:dtype,onCreate:ponCreate }: Props) {
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("keyname");
-  const [type,setType] = React.useState<tCredentailsType>("gemmini")
+  const [type,setType] = React.useState<tCredentailsType>(
+   dtype|| "gemmini")
   const [credential, setCredential] = React.useState("secret");
   const types = Object.keys(CredentialsRegistry)
   const { mutate, isPending } = useCreateCredential();
@@ -45,10 +49,11 @@ export function CreateCredentialAlertDialog({ children }: Props) {
         credential,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           setOpen(false);
           setName("");
           setCredential("");
+          if(ponCreate) ponCreate(data)
         },
         
       }
@@ -88,7 +93,8 @@ export function CreateCredentialAlertDialog({ children }: Props) {
             type="password"
           />
          <Select
-
+         disabled={!!dtype}
+           value={type}
                    onValueChange={(value:tCredentailsType) => setType(value)}
          >
       <SelectTrigger className="w-full">
@@ -115,12 +121,12 @@ export function CreateCredentialAlertDialog({ children }: Props) {
           <AlertDialogCancel disabled={isPending}>
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
+          <Button
             onClick={onCreate}
             disabled={!name || !credential || isPending}
           >
             {isPending ? "Creating..." : "Create"}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

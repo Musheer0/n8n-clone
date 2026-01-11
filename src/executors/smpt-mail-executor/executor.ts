@@ -16,9 +16,14 @@ export const MailSenderExecutor = async(params:NodeExexuteParams)=>{
     }
     const compiled_data = handlebars.compile(JSON.stringify(params.args))(params.context);
     const {data,error} = sendGMailSchema.safeParse(JSON.parse(compiled_data));
+  
       if(error) {
        await params.publish(NodeChannel().status({status:"error",nodeId:params.node.id}));
        throw new NonRetriableError(error.message)
+    }
+      if(!data?.to ||!data?.from || !data.subject || (!data?.content  && !data.html )){
+           await params.publish(NodeChannel().status({status:"error",nodeId:params.node.id}));
+       throw new NonRetriableError("smtp mail not configured")
     }
     try {
         const transporter = createTranspoter(data.smtp_user,data.smtp_passs);
