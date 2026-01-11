@@ -67,6 +67,8 @@ export default function EmailSettingsDialog({
       subject: data?.subject || "",
       content: data?.content || "",
       html: data?.html || "",
+            credentialId:data?.credentialId||""
+
     },
   })
 

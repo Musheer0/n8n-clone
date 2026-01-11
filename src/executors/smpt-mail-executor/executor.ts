@@ -7,6 +7,14 @@ import { sendGMailSchema } from "./validator";
 import { createTranspoter } from "./transporter";
 import { sendGMail } from "./send-mail";
 import handlebars from 'handlebars'
+import { caller } from "@/trpc/server";
+import { getCredentialKey } from "@/redis/keys/credentials";
+import { checkCacheAndQuery } from "@/redis/utils/caache-exists";
+import { tcredentials } from "@/db/types/credentials";
+import db from "@/db";
+import { and, eq } from "drizzle-orm";
+import { credentails } from "../../../drizzle/schema";
+import { decrypt } from "@/lib/encrypt-decrypt";
 handlebars.registerHelper("json",(ctx)=>new handlebars.SafeString(JSON.stringify(ctx,null,2)))
 export const MailSenderExecutor = async(params:NodeExexuteParams)=>{
     await params.publish(NodeChannel().status({status:"loading",nodeId:params.node.id}));
@@ -26,8 +34,20 @@ export const MailSenderExecutor = async(params:NodeExexuteParams)=>{
        throw new NonRetriableError("smtp mail not configured")
     }
     try {
-        const transporter = createTranspoter(data.smtp_user,data.smtp_passs);
-        const {smtp_passs,smtp_user,...sendProps} = data
+
+          const cacheKey = getCredentialKey(
+                data.credentialId,
+                "smpt.gmail"
+              );
+        const credential = await checkCacheAndQuery<tcredentials>(cacheKey,()=>{
+            return db.query.credentails.findFirst({
+                where:and(eq(credentails.id,data.credentialId),eq(credentails.type,"smpt.gmail"))
+            })
+        });
+        if(!credential) throw new NonRetriableError("credential not found");
+        const smtp_pass = decrypt(credential.userId,credential.credential)
+        const transporter = createTranspoter(data.from,smtp_pass);
+        const {from,...sendProps} = data
         await sendGMail({...sendProps,transporter});
                await params.publish(NodeChannel().status({status:"success",nodeId:params.node.id}));
         return {

@@ -4,13 +4,10 @@ export const sendGMailSchema = z
   .object({
     to: z.string(),
     subject: z.string().min(1),
-
-
     from: z.string().email().optional(),
     content: z.string().optional(),
     html: z.string().optional(),
-    smtp_user:z.string(),
-    smtp_passs:z.string()
+    credentialId:z.string()
   })
   .refine(
     (data) => data.content || data.html,
