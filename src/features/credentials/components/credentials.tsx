@@ -1,7 +1,5 @@
 "use client"
 
-import { tworkflow } from "@/db/types/workflow"
-import { usePaginatedWorkflows } from "@/hooks/use-workflows"
 import {
   Card,
   CardHeader,
@@ -10,54 +8,44 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
-  Workflow,
   Loader2,
   AlertTriangle,
-  PlusCircleIcon,
-  Trash2Icon,
+  KeyIcon,
+  TrashIcon,
 } from "lucide-react"
-import Link from "next/link"
-import CreateWorkflowButton from "./create-workflow-button"
-import { DeleteWorkflowDialog } from "./delete-workflow"
+import { usePaginatedCredentials } from "@/hooks/use-credentials-hook"
+import { tcredentials } from "@/db/types/credentials"
+import RenderCredentialIcon from "./render-credential-icon"
+import { DeleteCredentialAlertDialog } from "./delete-credential"
 
 /* --------------------------------
    Workflow Card (pure / dumb)
 --------------------------------- */
 
-type WorkflowCardProps = {
-  workflow: tworkflow
+type CredentialCardProps = {
+  credential:tcredentials
 }
 
-const WorkflowCard = ({ workflow }: WorkflowCardProps) => {
+const CredentialCard = ({ credential }: CredentialCardProps) => {
   return (
-    <Card className="hover:shadow-md transition w-full max-w-md">
+<Card className="hover:shadow-md w-full max-w-sm transition">
         <CardHeader className="flex flex-row items-center gap-3">
-          <Workflow className="h-5 w-5 text-muted-foreground" />
+         <RenderCredentialIcon type={credential.type} className="size-7"/>
           <div className="w-full">
-           <div
-           onClick={(e)=>e.stopPropagation()}
-           className="w-full flex items-center justify-between">
-           <Link
-                     href={`/workflows/${workflow.id}`}
-
-           >
-             <CardTitle className="text-base">
-              {workflow.name}
+            <div className="flex w-full justify-between items-center">
+              <CardTitle className="text-base flex-1 line-clamp-1">
+              {credential.name}
             </CardTitle>
-           </Link>
-            <DeleteWorkflowDialog id={workflow.id}>
-              <Button size={"icon-sm"} variant={"ghost"}><Trash2Icon/></Button>
-            </DeleteWorkflowDialog>
-           </div>
-        <Link
-          href={`/workflows/${workflow.id}`}
-          className=""
-        >
+            <DeleteCredentialAlertDialog id={credential.id} type={credential.type}>
+              <Button variant={"destructive"} size={"icon-sm"}>
+                <TrashIcon/>
+              </Button>
+            </DeleteCredentialAlertDialog>
+            </div>
             <CardDescription>
               Created{" "}
-              {new Date(workflow.createdAt).toLocaleDateString()}
+              {new Date(credential.createdAt).toLocaleDateString()}
             </CardDescription>
-    </Link>
           </div>
         </CardHeader>
       </Card>
@@ -68,7 +56,7 @@ const WorkflowCard = ({ workflow }: WorkflowCardProps) => {
    Skeleton (for initial load)
 --------------------------------- */
 
-const WorkflowSkeleton = () => {
+const CredentialSkeleton = () => {
   return (
     <Card className="w-full max-w-sm animate-pulse">
       <CardHeader className="flex flex-row items-center gap-3">
@@ -83,10 +71,10 @@ const WorkflowSkeleton = () => {
 }
 
 /* --------------------------------
-   Workflow List (smart)
+   Credential List (smart)
 --------------------------------- */
 
-const WorkflowList = () => {
+const CredentialsList = () => {
   const {
     data,
     error,
@@ -95,17 +83,17 @@ const WorkflowList = () => {
     hasNextPage,
     fetchNextPage,
     refetch,
-  } = usePaginatedWorkflows()
+  } = usePaginatedCredentials()
 
-  const workflows =
-    data?.pages.flatMap((page) => page.worflows) ?? []
+  const credentials =
+    data?.pages.flatMap((page) => page.credentials) ?? []
 
   /* ---------- Initial Loading ---------- */
   if (isLoading) {
     return (
       <div className="p-5 flex flex-wrap gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <WorkflowSkeleton key={i} />
+          <CredentialSkeleton key={i} />
         ))}
       </div>
     )
@@ -127,18 +115,14 @@ const WorkflowList = () => {
   }
 
   /* ---------- Empty State ---------- */
-  if (workflows.length === 0) {
+  if (credentials.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center gap-2">
-        <Workflow className="h-8 w-8 text-muted-foreground" />
+        <KeyIcon className="h-8 w-8 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          No workflows yet
+          No credentials yet
         </p>
-        <CreateWorkflowButton>
-         <>
-          <PlusCircleIcon/> Create one?
-         </>
-        </CreateWorkflowButton>
+    
       </div>
     )
   }
@@ -148,8 +132,8 @@ const WorkflowList = () => {
     <div className="flex flex-col h-full w-full">
       <div className="flex-1 overflow-y-auto p-5">
         <div className="flex flex-wrap gap-3">
-          {workflows.map((wf) => (
-            <WorkflowCard key={wf.id} workflow={wf} />
+          {credentials.map((credential) => (
+            <CredentialCard key={credential.id} credential={credential} />
           ))}
         </div>
 
@@ -173,4 +157,4 @@ const WorkflowList = () => {
   )
 }
 
-export default WorkflowList
+export default CredentialsList

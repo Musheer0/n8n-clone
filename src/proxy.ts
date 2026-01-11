@@ -4,7 +4,7 @@ export function proxy(request: NextRequest) {
     const sessionToken = request.cookies.get('better-auth.session_token')?.value;
 
     // Public routes that don't need authentication
-    const publicRoutes = ['/',  '/api/auth','/login','/api/inngest'];
+    const publicRoutes = ['/',  '/api/auth','/login','/api/'];
     const isPublicRoute = publicRoutes.some(route => 
         request.nextUrl.pathname.startsWith(route)
     );

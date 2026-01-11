@@ -36,13 +36,17 @@ export const workflowsRouter = createTRPCRouter({
         const w = await checkCacheAndQuery<tworkflow>(getOneWorkflowKey(input.id),async()=>{
            return  db.query.workflows.findFirst({
                 where:and(
-                    eq(user.id ,ctx.auth.user.id),
+                    eq(workflows.user_id ,ctx.auth.user.id),
                     eq(workflows.id, input.id)
                 )
             });
         });
         if(!w || w.user_id!==ctx.auth.user.id) throw new TRPCError({code:"FORBIDDEN",message:"you don't have access to this workflow"});
        await redis.del(getOneWorkflowKey(input.id));
+       await db.delete(workflows).where(and(
+                    eq(workflows.user_id ,ctx.auth.user.id),
+                    eq(workflows.id, input.id)
+                ))
        return w.id
     }),
 
@@ -87,7 +91,7 @@ export const workflowsRouter = createTRPCRouter({
          const w = await checkCacheAndQuery(getOneWorkflowKey(input.id),async()=>{
              return  db.query.workflows.findFirst({
                 where:and(
-                    eq(user.id ,ctx.auth.user.id),
+                    eq(workflows.user_id ,ctx.auth.user.id),
                     eq(workflows.id, input.id)
                 )
             });
@@ -108,7 +112,7 @@ export const workflowsRouter = createTRPCRouter({
           const w = await checkCacheAndQuery(getOneWorkflowKey(input.id),async()=>{
              return  db.query.workflows.findFirst({
                 where:and(
-                    eq(user.id ,ctx.auth.user.id),
+                    eq(workflows.user_id ,ctx.auth.user.id),
                     eq(workflows.id, input.id)
                 )
             });

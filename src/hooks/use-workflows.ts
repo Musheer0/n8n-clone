@@ -1,5 +1,6 @@
+import { tworkflow } from "@/db/types/workflow";
 import { useTRPC } from "@/trpc/client"
-import { useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react-query"
+import { InfiniteData, useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react-query"
 import { useReactFlow } from "@xyflow/react";
 import { toast } from "sonner";
 
@@ -74,4 +75,13 @@ export const useExecuteWorkflow = ()=>{
         onSuccess:()=>toast.success("workflow started successfully"),
         onError:(data)=>toast.error(data.message)
     }))
+}
+
+export const useDeleteWorkflow = () => {
+  const trpc = useTRPC()
+
+  return useMutation(
+    trpc.workflow.remove.mutationOptions({
+    })
+  )
 }

@@ -112,6 +112,23 @@ export const workflows = pgTable("workflows",{
 export const NodeTypeDb = pgEnum("node_type",[
  "manual","http","googleForm","smpt_mail"
 ])
+export const CredentialsTypeDb = pgEnum("credentialsType",[
+  "gemmini","smpt.gmail"
+])
+export const credentails = pgTable("credentials",{
+      id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
+      name:text("name").notNull(),
+      type:CredentialsTypeDb("type").notNull(),
+      userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
+      credential:text("credential").notNull(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+      
+
+})
 export const node = pgTable("node",{
     id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
     name :text("name").notNull(),

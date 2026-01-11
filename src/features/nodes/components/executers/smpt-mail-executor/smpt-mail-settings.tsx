@@ -21,11 +21,13 @@ import {
 } from "@/components/ui/form"
 
 import { useReactFlow } from "@xyflow/react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Label } from "@/components/ui/label"
+import CredentialsSelector from "../../credentials-selector"
 
 /* ---------------- ZOD SCHEMA ---------------- */
 
@@ -35,6 +37,7 @@ const emailNodeSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   content: z.string().optional(),
   html: z.string().optional(),
+  credentialId:z.string().min(1)
 })
 
 type FormValues = z.infer<typeof emailNodeSchema>
@@ -55,7 +58,7 @@ export default function EmailSettingsDialog({
   data,
 }: Props) {
   const { setNodes } = useReactFlow()
-
+  const [credentialId ,setCredentialId] = useState('')
   const form = useForm<FormValues>({
     resolver: zodResolver(emailNodeSchema),
     defaultValues: {
@@ -64,6 +67,8 @@ export default function EmailSettingsDialog({
       subject: data?.subject || "",
       content: data?.content || "",
       html: data?.html || "",
+            credentialId:data?.credentialId||""
+
     },
   })
 
@@ -74,6 +79,7 @@ export default function EmailSettingsDialog({
       subject: data?.subject || "",
       content: data?.content || "",
       html: data?.html || "",
+      credentialId:data?.credentialId||""
     })
   }, [data, form])
 
@@ -109,7 +115,16 @@ export default function EmailSettingsDialog({
 </p>
 
         </DialogHeader>
-
+        <div>
+          <Label>
+            App Password
+          </Label>
+          <CredentialsSelector type={"smpt.gmail"} value={data?.credentialId}
+          onSelect={(e)=>{
+            form.setValue("credentialId",e.id)
+          }}
+          />
+        </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
