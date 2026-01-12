@@ -1,38 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# n8n Clone
+
+A mini n8n clone built with Next.js, React Flow, and tRPC for creating and executing workflows.
+
+## Features
+
+- 🎨 **Modern UI** - Built with shadcn/ui components and Tailwind CSS
+- 🌙 **Dark Mode** - Full dark/light theme support
+- 🔐 **Authentication** - Better Auth with Redis integration
+- 📊 **Workflow Editor** - Visual workflow builder using React Flow
+- ⚡ **Real-time Execution** - Inngest for background job processing
+- 🗄️ **Database** - PostgreSQL with Drizzle ORM
+- 🔄 **tRPC** - End-to-end type safety
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **UI**: shadcn/ui, Tailwind CSS, Radix UI
+- **State Management**: Jotai, TanStack Query
+- **Backend**: tRPC, Drizzle ORM
+- **Database**: PostgreSQL
+- **Auth**: Better Auth
+- **Background Jobs**: Inngest
+- **Cache**: Upstash Redis
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database
+- Redis instance (for auth caching)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone <your-repo-url>
+cd n8n-clone
+
+# Install dependencies
+pnpm install
+
+# Copy environment variables
+cp .env.example .env
+
+# Set up your database and environment variables
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# Database
+DATABASE_URL="postgresql://..."
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Auth
+AUTH_SECRET="your-secret-key"
+REDIS_URL="redis://..."
 
-## Learn More
+# Inngest
+INNGEST_EVENT_KEY="your-inngest-key"
+INNGEST_SIGNING_KEY="your-signing-key"
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Running the App
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Start development server
+pnpm dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run database migrations
+pnpm db:migrate
 
-## Deploy on Vercel
+# Start Inngest dev server
+pnpm inngest
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# n8n-clone
-# n8n-clone
+```
+src/
+├── app/                    # Next.js app router
+├── components/            # Reusable UI components
+├── features/              # Feature-specific components
+│   ├── credentials/       # Credential management
+│   ├── execution-history/ # Workflow execution history
+│   ├── nodes/            # Workflow nodes (triggers, executors)
+│   └── workflows/        # Workflow management
+├── trpc/                 # tRPC setup
+└── lib/                  # Utilities and helpers
+```
+
+## Current Features
+
+### ✅ Completed
+- Authentication system with GitHub OAuth
+- Workflow CRUD operations
+- Visual workflow editor with React Flow
+- Node types: Manual trigger, HTTP executor, SMTP mail executor
+- Credential management
+- Execution history
+- Dark mode support
+
+### 🚧 In Progress
+- More node types (Google Forms trigger, etc.)
+- Workflow scheduling
+- Advanced error handling
+
+### 📋 Planned
+- Workflow templates
+- Team collaboration
+- Advanced monitoring and analytics
+
+## Scripts
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run Biome linter
+- `pnpm format` - Format code with Biome
+- `pnpm inngest` - Start Inngest dev server
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run the linter and tests
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details.
