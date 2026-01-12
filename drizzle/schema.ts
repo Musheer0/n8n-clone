@@ -159,3 +159,23 @@ export const connection = pgTable("connection",{
     table.fromNodeId,table.toNodeId,table.from_output,table.to_output
   )
 }))
+
+export const workflow_status = pgEnum("workflow_status",[
+  "success","error","running"
+])
+export const execution_status = pgTable("execution_status",{
+   id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),
+    workflow_id:text("workflow_id").notNull().references(()=>workflows.id,{onDelete:"cascade"}),
+    userId:text("userId").notNull().references(()=>user.id,{onDelete:"cascade"}),
+      updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+    error:text("error"),
+    errorStack:text("errorStack"),
+    output:jsonb("output"),
+    completed_at:timestamp("completed_at"),
+            createdAt: timestamp("created_at").defaultNow().notNull(),
+            status:workflow_status("status").default("running")
+
+})

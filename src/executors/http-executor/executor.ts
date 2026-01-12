@@ -30,7 +30,7 @@ export const HttpExecutor: NodeExecutor = async ({
     throw new NonRetriableError("Http node config incomplete");
   }
 
-  return step.run("http-execution", async () => {
+  return step.run("http-execution-"+node.id, async () => {
     await publish(NodeChannel().status({ status: "loading", nodeId: node.id }));
   if (!data.url|| !data.name) {
     await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
