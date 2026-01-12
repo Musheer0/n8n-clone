@@ -1,14 +1,12 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 import { checkCacheAndQuery } from "@/redis/utils/caache-exists";
-import { getNodeEdgesKey, getOneWorkflowKey } from "@/redis/keys/workflows";
+import {  getOneWorkflowKey } from "@/redis/keys/workflows";
 import db from "@/db";
-import { and, eq } from "drizzle-orm";
-import { node, workflows, connection } from "../../../drizzle/schema";
-import { tconnection, tnode, tworkflow } from "@/db/types/workflow";
+import {  eq } from "drizzle-orm";
+import {  execution_status, workflows,} from "../../../drizzle/schema";
+import {   tworkflow } from "@/db/types/workflow";
 import { TRPCError } from "@trpc/server";
-import { redis } from "@/redis/client";
-import { topologicalSort } from "@/lib/topoogical-sort";
 import { inngest } from "@/inngest/client";
 
 export const ExecuteRouter = createTRPCRouter({
@@ -42,12 +40,17 @@ export const ExecuteRouter = createTRPCRouter({
         });
       }
 
-     
+     const [executionId] = await db.insert(execution_status).values({
+      userId:ctx.auth.user.id,
+      workflow_id:workflow.id,
+
+     }).returning({id:execution_status.id})
       await inngest.send({
         name:"execute/workflow",
         data:{
           user:{id:ctx.auth.user.id},
-          workflow_id:workflow.id
+          workflow_id:workflow.id,
+          id:executionId
         }
       })
       return {

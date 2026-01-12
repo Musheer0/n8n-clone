@@ -5,7 +5,7 @@ import { NodeStatus, NodeStatusIndicator } from "@/features/nodes/components/nod
 
 export function BaseNode({ className, ...props }: ComponentProps<"div"> & {status:NodeStatus}) {
   return (
-<NodeStatusIndicator status={props.status}>
+<NodeStatusIndicator variant="overlay" status={props.status}>
       <div
       className={cn(
         "bg-card text-card-foreground relative rounded-md border",

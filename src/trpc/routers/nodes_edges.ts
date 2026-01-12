@@ -9,7 +9,6 @@ import { tconnection, tnode, tnode_type, tworkflow } from "@/db/types/workflow";
 import { TRPCError } from "@trpc/server";
 import { redis } from "@/redis/client";
 import { formatEdges, formatNodes } from "../utils/format-data";
-
 export const nodes_edges_router = createTRPCRouter({
     save:protectedProcedure
     .input(z.object({
