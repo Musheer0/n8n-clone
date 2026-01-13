@@ -110,7 +110,7 @@ export const workflows = pgTable("workflows",{
   ]
   )
 export const NodeTypeDb = pgEnum("node_type",[
- "manual","http","googleForm","smpt_mail","discord"
+ "manual","http","googleForm","smpt_mail","discord","webhook"
 ])
 export const CredentialsTypeDb = pgEnum("credentialsType",[
   "gemmini","smpt.gmail"

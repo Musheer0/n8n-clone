@@ -115,7 +115,7 @@ export default function EmailSettingsDialog({
               name="webhook"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>From</FormLabel>
+                  <FormLabel>Webhook Url</FormLabel>
                   <FormControl>
                     <Input placeholder="webhook url" {...field} />
                   </FormControl>

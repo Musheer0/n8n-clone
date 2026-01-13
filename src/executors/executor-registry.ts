@@ -6,6 +6,7 @@ import { NonRetriableError } from "inngest";
 import { GoogleFormExecutor } from "./google-form-trigger/executor";
 import { MailSenderExecutor } from "./smpt-mail-executor/executor";
 import { DiscordExecutor } from "./discord-executor/executor";
+import { WebhookExecutor } from "./webhook-trigger/executor";
 
 type executors = Record<tnode_type,NodeExecutor>
 export const executors:executors = {
@@ -13,7 +14,8 @@ export const executors:executors = {
     "http":HttpExecutor,
     "googleForm":GoogleFormExecutor,
     "smpt_mail":MailSenderExecutor,
-    "discord":DiscordExecutor
+    "discord":DiscordExecutor,
+    "webhook":WebhookExecutor
 }
 export const getExecutor = (type:tnode_type)=>{
     const executor = executors[type]

@@ -19,6 +19,7 @@ import {
   MailIcon,
   MouseIcon,
   PlusIcon,
+  WebhookIcon,
   XIcon
 } from 'lucide-react'
 import { useReactFlow } from '@xyflow/react'
@@ -51,6 +52,12 @@ const nodelist: nodelist = [
         description: "trigger a workflow through google forms",
         type: "googleForm",
         icon: '/gforms.svg'
+      },
+          {
+        name: "Webhook Trigger",
+        description: "trigger a workflow by sending a post request to the webhook",
+        type: "webhook",
+        icon:WebhookIcon
       }
     ]
   },
