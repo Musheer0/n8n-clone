@@ -5,11 +5,13 @@ import HttpNode from "./components/executers/http-executor/http-node";
 import GoogleFormTriggerNode from "./components/triggers/google-form-trigger/google-form-trigger-node";
 import SmptMailNode from "./components/executers/smpt-mail-executor/smpt-mail-node";
 import DiscordNode from "./components/executers/discord-executor/discord-node";
+import WebhookTriggerNode from "./components/triggers/webhook-trigger/google-form-trigger-node";
 
 export const NodeRegistry:TNodeRegistry ={
     "manual":MannualTriggerNode,
     "http":HttpNode,
     "googleForm":GoogleFormTriggerNode,
     "smpt_mail":SmptMailNode,
-    "discord":DiscordNode
+    "discord":DiscordNode,
+    "webhook":WebhookTriggerNode
 } 
