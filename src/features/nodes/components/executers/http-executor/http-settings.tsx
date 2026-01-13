@@ -44,7 +44,7 @@ type Props = {
 /* ---------------- ZOD SCHEMA (ALL HERE) ---------------- */
 
 const httpNodeSchema = z.object({
-  name: z
+ _internal_variable_name : z
     .string()
     .min(1, "variable name is required")
     .regex(/^[A-Za-z0-9_]+$/, {
@@ -74,7 +74,7 @@ export default function HttpSettingsDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(httpNodeSchema),
     defaultValues: {
-      name: data?.name || "todo",
+      _internal_variable_name : data?._internal_variable_name || "todo",
       method: data?.method || "GET",
       url: data?.url || "",
       body:
@@ -88,7 +88,7 @@ export default function HttpSettingsDialog({
 
   useEffect(() => {
     form.reset({
-      name: data?.name || "todo",
+    _internal_variable_name : data?._internal_variable_name || "todo",
       method: data?.method || "GET",
       url: data?.url || "",
       body:
@@ -105,7 +105,7 @@ export default function HttpSettingsDialog({
           ? {
               ...node,
               data: {
-                ...node.data,
+                ...node.data, 
                 ...values,
               },
             }
@@ -131,7 +131,7 @@ export default function HttpSettingsDialog({
             {/* Variable Name */}
             <FormField
               control={form.control}
-              name="name"
+              name="_internal_variable_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Variable Name</FormLabel>

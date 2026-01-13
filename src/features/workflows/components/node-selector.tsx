@@ -68,6 +68,12 @@ const nodelist: nodelist = [
         description: "execute a smpt mail",
         type: "smpt_mail",
         icon: MailIcon
+      },
+       {
+        name: "Discord ",
+        description: "Send a discord message",
+        type: "discord",
+        icon: '/discord.svg'
       }
     ]
   }

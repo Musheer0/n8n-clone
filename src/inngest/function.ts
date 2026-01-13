@@ -40,7 +40,6 @@ export const execute = inngest.createFunction(
 
    }
    if(event.data.id){
- console.log(event)
     await db.update(execution_status).set({
         output:context,
         status:"success"

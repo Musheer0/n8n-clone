@@ -8,7 +8,7 @@ type HttpRequest ={
     url?:string,
     method?:"GET"|"POST"|"PUT"|"DELETE"|"PATCH";
     body?:string;
-  name?:string
+  _internal_variable_name?:string
 }
 export const HttpExecutor: NodeExecutor = async ({
   context,
@@ -25,14 +25,14 @@ export const HttpExecutor: NodeExecutor = async ({
 
   const data = node.data as HttpRequest;
 
-  if (!data.url|| !data.name) {
+  if (!data.url|| !data._internal_variable_name) {
     await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node config incomplete");
   }
 
   return step.run("http-execution-"+node.id, async () => {
     await publish(NodeChannel().status({ status: "loading", nodeId: node.id }));
-  if (!data.url|| !data.name) {
+  if (!data.url|| !data._internal_variable_name) {
     await publish(NodeChannel().status({ status: "error", nodeId: node.id }));
     throw new NonRetriableError("Http node config incomplete");
   }
@@ -57,7 +57,7 @@ export const HttpExecutor: NodeExecutor = async ({
 
       return {
         ...context,
-        [data.name]: {
+        [data._internal_variable_name]: {
           http: {
             ok: true,
             status: response.status,
@@ -74,7 +74,7 @@ export const HttpExecutor: NodeExecutor = async ({
 
         return {
           ...context,
-          [data.name]: {
+          [data._internal_variable_name]: {
             http: {
               ok: false,
               status: err.response.status,
