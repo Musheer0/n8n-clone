@@ -1,3 +1,3 @@
 export interface baseNodeData {
-    name:string
+    _internal_variable_name :string
 }

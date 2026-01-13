@@ -63,7 +63,7 @@ const handleDelete = ()=>{
    <BaseNodeContent>
    {typeof Icon ==="string"
    ? 
-   <img src={Icon} className="w-10 h-10"/>
+   <img src={Icon} className="w-4 h-4"/>
    :
    <Icon className="size-4 text-muted-foreground"/>
    }
