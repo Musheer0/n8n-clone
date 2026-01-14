@@ -21,7 +21,7 @@ type Props = {
 }
 
 const BASE_WEBHOOK_URL =
-  "https://x9k3bf94-3000.inc1.devtunnels.ms/api/webhooks/triggers/google-form"
+  `${process.env.NEXT_PUBLIC_APP}/api/webhooks/triggers/google-form`
 
 export default function GoogleFormTriggerDialog({
   open,
