@@ -14,11 +14,19 @@ import { useCredentialsByType } from '@/hooks/use-credentials-hook'
 import { PlusCircleIcon } from "lucide-react"
 import React from 'react'
 
-const CredentialsSelector = ({type,onSelect,value}:{type:tCredentailsType,onSelect:(data:tcredentials)=>void,value?:string}) => {
+const CredentialsSelector = ({type,onSelect,value,placeholderr}:{type:tCredentailsType,onSelect:(data:tcredentials)=>void,value?:string,placeholderr?:string}) => {
     const {data,isPending} = useCredentialsByType(type)
 
   if(isPending)
     return <div className='w-full h-10 bg-muted-foreground/20 animate-pulse my-1 rounded-xl'></div>
+  if(data?.length===0)
+    return (
+  
+   <CreateCredentialAlertDialog type={type}>
+     <Button className="my-0.5" variant={"outline"}>Create New Api Key <PlusCircleIcon/></Button>
+   </CreateCredentialAlertDialog>
+
+    )
   if(data)
   return (
   <Select
@@ -26,7 +34,7 @@ const CredentialsSelector = ({type,onSelect,value}:{type:tCredentailsType,onSele
   onValueChange={(e)=>onSelect(data.find((d)=>d.id===e)!)}
   >
   <SelectTrigger className="w-fulll my-2">
-    <SelectValue placeholder="Select App Password" />
+    <SelectValue placeholder={placeholderr ||"Select App Password"} />
   </SelectTrigger>
   <SelectContent>
     {data?.map((c)=>{

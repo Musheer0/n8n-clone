@@ -81,6 +81,18 @@ const nodelist: nodelist = [
         description: "Send a discord message",
         type: "discord",
         icon: '/discord.svg'
+      },
+         {
+        name: "Gemini-Text",
+        description: "Get a text Response from gemini",
+        type: "gemini",
+        icon: '/gemini.png'
+      },
+         {
+        name: "Groq-Text",
+        description: "Get a text Response from groq",
+        type: "groq",
+        icon: '/groq.svg'
       }
     ]
   }
@@ -148,7 +160,7 @@ const NodeSelector = ({ children }: { children: React.ReactNode }) => {
             use different nodes to automate your boring stuff
           </SheetDescription>
 
-          <div className="w-full py-2 relative">
+          <div className="w-full overflow-y-auto py-2 relative">
             <Input
               placeholder="Search Nodes"
               value={search}
@@ -169,7 +181,7 @@ const NodeSelector = ({ children }: { children: React.ReactNode }) => {
           </div>
         </SheetHeader>
 
-        <div className="flex flex-col gap-2 w-full py-2">
+        <div className="flex flex-col gap-2 overflow-y-auto w-full py-2">
           {filteredNodeList.length === 0 && (
             <p className="text-sm text-muted-foreground px-4">
               No nodes found. Skill issue? 😔

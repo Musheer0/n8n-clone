@@ -6,6 +6,8 @@ import GoogleFormTriggerNode from "./components/triggers/google-form-trigger/goo
 import SmptMailNode from "./components/executers/smpt-mail-executor/smpt-mail-node";
 import DiscordNode from "./components/executers/discord-executor/discord-node";
 import WebhookTriggerNode from "./components/triggers/webhook-trigger/google-form-trigger-node";
+import GeminiNode from "./components/executers/gemini-executor/discord-node";
+import GroqNode from "./components/executers/groq-executor/groq-node";
 
 export const NodeRegistry:TNodeRegistry ={
     "manual":MannualTriggerNode,
@@ -13,5 +15,7 @@ export const NodeRegistry:TNodeRegistry ={
     "googleForm":GoogleFormTriggerNode,
     "smpt_mail":SmptMailNode,
     "discord":DiscordNode,
-    "webhook":WebhookTriggerNode
+    "webhook":WebhookTriggerNode,
+    "gemini":GeminiNode,
+    "groq":GroqNode
 } 

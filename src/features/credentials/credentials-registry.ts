@@ -4,7 +4,8 @@ import { LucideIcon, MailIcon } from "lucide-react";
 export type CredentialsRegistry = Record<tCredentailsType, string|LucideIcon>
 
 export const CredentialsRegistry:CredentialsRegistry = {
-    "gemmini": "./gemini.png",
-    "smpt.gmail":MailIcon
+    "gemini": "/gemini.png",
+    "smpt.gmail":MailIcon,
+    "groq":'/groq.svg'
 }
 export const getCredentialIcon = (type:tCredentailsType) =>CredentialsRegistry[type]
