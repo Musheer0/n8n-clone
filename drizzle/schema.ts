@@ -110,10 +110,10 @@ export const workflows = pgTable("workflows",{
   ]
   )
 export const NodeTypeDb = pgEnum("node_type",[
- "manual","http","googleForm","smpt_mail","discord","webhook"
+ "manual","http","googleForm","smpt_mail","discord","webhook","gemini","groq"
 ])
 export const CredentialsTypeDb = pgEnum("credentialsType",[
-  "gemmini","smpt.gmail"
+  "gemini","smpt.gmail","groq"
 ])
 export const credentails = pgTable("credentials",{
       id: text("id").primaryKey().$defaultFn(()=>crypto.randomUUID()),

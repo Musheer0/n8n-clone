@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@inngest/agent-kit": "^0.13.2",
     "@inngest/realtime": "^0.4.5",
     "@paralleldrive/cuid2": "^3.0.6",
     "@radix-ui/react-accordion": "^1.2.12",
@@ -48,6 +49,7 @@
     "@trpc/tanstack-react-query": "^11.8.1",
     "@upstash/redis": "^1.36.0",
     "@xyflow/react": "^12.10.0",
+    "ai": "^6.0.33",
     "better-auth": "^1.4.10",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
@@ -59,6 +61,7 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "embla-carousel-react": "^8.6.0",
+    "groq-sdk": "^0.37.0",
     "handlebars": "^4.7.8",
     "inngest": "^3.48.1",
     "input-otp": "^1.4.2",

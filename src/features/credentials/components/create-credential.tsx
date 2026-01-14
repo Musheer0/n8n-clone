@@ -36,7 +36,7 @@ export function CreateCredentialAlertDialog({ children,type:dtype,onCreate:ponCr
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("keyname");
   const [type,setType] = React.useState<tCredentailsType>(
-   dtype|| "gemmini")
+   dtype|| "gemini")
   const [credential, setCredential] = React.useState("secret");
   const types = Object.keys(CredentialsRegistry)
   const { mutate, isPending } = useCreateCredential();

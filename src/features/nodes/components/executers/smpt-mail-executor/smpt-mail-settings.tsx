@@ -185,6 +185,7 @@ export default function EmailSettingsDialog({
                   <FormControl>
                     <Textarea
                       rows={4}
+                      className="max-h-[300px]"
                       placeholder="Plain text email content"
                       {...field}
                     />
@@ -204,7 +205,7 @@ export default function EmailSettingsDialog({
                   <FormControl>
                     <Textarea
                       rows={6}
-                      className="font-mono text-sm"
+                      className="font-mono max-h-[300px] text-sm"
                       placeholder={`<h1>Hello</h1>`}
                       {...field}
                     />
