@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { GithubIcon } from "lucide-react"
 import Link from "next/link"
+import { authClient } from "@/lib/auth-client"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleGithubLogin = async () => {
     setIsLoading(true)
-    // TODO: Implement GitHub login
+   authClient.signIn.social({provider:"github",})
   }
 
   return (
