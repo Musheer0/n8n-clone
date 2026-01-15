@@ -24,7 +24,7 @@ const Page = () => {
         <CreateCredentialAlertDialog>
           <Button size="sm" className="gap-2">
             <PlusIcon className="h-4 w-4" />
-            Create workflow
+            Create Credential
           </Button>
         </CreateCredentialAlertDialog>
       </header>
