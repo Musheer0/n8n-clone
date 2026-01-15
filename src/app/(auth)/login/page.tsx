@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   const handleGithubLogin = async () => {
     setIsLoading(true)
-   authClient.signIn.social({provider:"github",})
+   authClient.signIn.social({provider:"github",}).then(()=>window.location.replace(window.location.origin+'/workflows'))
   }
 
   return (
