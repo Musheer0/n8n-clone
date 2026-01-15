@@ -110,8 +110,8 @@ export default function GoogleFormTriggerDialog({
 gforms.data
 // All answers
 gforms.data.responses
-// Single answer
-gforms.data.responses["What is your name?"]
+// Single answer remove all spaces from your question
+gforms.data.responsesWhatisyourname?
 `}
           />
         </div>
